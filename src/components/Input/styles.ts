@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 interface ContainerProps {
   isFocused: boolean;
+  hasData: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -18,6 +19,12 @@ export const Container = styled.div<ContainerProps>`
     css`
       color: #ff9000;
       border: 2px solid #ff9000;
+    `}
+
+  ${(props) =>
+    props.hasData &&
+    css`
+      color: #ff9000;
     `}
 
   & + div {
