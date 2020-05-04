@@ -1,9 +1,12 @@
 import React, { useCallback, useRef } from 'react';
+import * as Yup from 'yup';
 import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
 import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
 import Logo from '../../assets/logo.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
 import { Background, Container, Content } from './styles';
 
 interface InputData {
@@ -13,10 +16,24 @@ interface InputData {
 }
 
 const Signup: React.FC = () => {
-  const formRef = useRef(null);
+  const formRef = useRef<FormHandles>(null);
 
-  const handleSubmit = useCallback((data: InputData) => {
-    console.log(data);
+  const handleSubmit = useCallback(async (data: InputData) => {
+    try {
+      formRef.current?.setErrors({});
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome é obrigatório'),
+        email: Yup.string()
+          .required('E-mail é obrigatório')
+          .email('Digite um e-mail válido'),
+        password: Yup.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+      });
+      await schema.validate(data, { abortEarly: false });
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        formRef.current?.setErrors(mapValidationErrorToErrorObject(error));
+      }
+    }
   }, []);
 
   return (

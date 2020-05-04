@@ -51,6 +51,7 @@ const Input: React.FC<InputProps> = ({
         defaultValue={defaultValue}
         {...otherProps}
       />
+      {error}
     </Container>
   );
 };
