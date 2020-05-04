@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, useRef, useEffect } from 'react';
+import React, { InputHTMLAttributes, useRef, useEffect, useState } from 'react';
 import { useField } from '@unform/core';
 import { IconBaseProps } from 'react-icons';
 import { Container } from './styles';
@@ -15,6 +15,7 @@ const Input: React.FC<InputProps> = ({
 }: InputProps) => {
   const inputRef = useRef(null);
   const { fieldName, defaultValue, registerField, error } = useField(name);
+  const [isFocused, setIsfocused] = useState(false);
 
   useEffect(() => {
     registerField({
@@ -25,9 +26,15 @@ const Input: React.FC<InputProps> = ({
   }, [fieldName, registerField]);
 
   return (
-    <Container>
+    <Container isFocused={isFocused}>
       {Icon && <Icon size={20} />}
-      <input ref={inputRef} defaultValue={defaultValue} {...otherProps} />
+      <input
+        onFocus={() => setIsfocused(true)}
+        onBlur={() => setIsfocused(false)}
+        ref={inputRef}
+        defaultValue={defaultValue}
+        {...otherProps}
+      />
     </Container>
   );
 };
