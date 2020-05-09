@@ -2,7 +2,11 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import api from '../data/api';
 import { AuthDTO, UserDTO } from '../data/models/AuthDTO';
 import { USER_INFO, TOKEN } from '../data/auth/authStorageConstants';
-import { getStorageItem, setStorageItem } from '../utils/storage';
+import {
+  getStorageItem,
+  setStorageItem,
+  removeStorageItem,
+} from '../utils/storage';
 
 interface Auth {
   user: UserDTO;
@@ -12,6 +16,7 @@ interface Auth {
 interface AuthContextData {
   auth: Auth;
   signIn(email: string, password: string): Promise<Auth>;
+  signOut(): void;
 }
 
 const defaultValue = {} as AuthContextData;
@@ -35,6 +40,7 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
     }
     return {} as Auth;
   });
+
   const signIn = useCallback(async (email: string, password: string) => {
     const response = await api.post<AuthDTO>('/sessions', {
       email,
@@ -48,7 +54,14 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
     setStorageItem(TOKEN, data.token);
     setStorageItem(USER_INFO, data.user);
   }, []);
-  return <AuthContext.Provider value={{ auth, signIn }} {...props} />;
+
+  const signOut = (): void => {
+    removeStorageItem(TOKEN);
+    removeStorageItem(USER_INFO);
+    setAuth({} as Auth);
+  };
+
+  return <AuthContext.Provider value={{ auth, signIn, signOut }} {...props} />;
 };
 
 export default {
