@@ -9,6 +9,7 @@ import Input from '../../components/Input';
 import { Background, Container, Content } from './styles';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
 import AuthContext from '../../hooks/AuthContext';
+import ToastContext from '../../hooks/ToastContext';
 
 interface LoginInputData {
   email: string;
@@ -18,6 +19,7 @@ interface LoginInputData {
 const Login: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const { signIn } = AuthContext.useAuth();
+  const { addToast } = ToastContext.useToast();
   const handleSubmit = useCallback(
     async (data: LoginInputData) => {
       try {
@@ -29,14 +31,20 @@ const Login: React.FC = () => {
           password: Yup.string().required('Senha é obrigatória'),
         });
         await schema.validate(data, { abortEarly: false });
-        signIn(data.email, data.password);
+        await signIn(data.email, data.password);
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           formRef.current?.setErrors(mapValidationErrorToErrorObject(error));
+          return;
         }
+        addToast({
+          type: 'error',
+          title: 'Erro ao fazer login',
+          description: 'Verifique se o email ou senha estão corretos',
+        });
       }
     },
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
