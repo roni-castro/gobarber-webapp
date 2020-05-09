@@ -1,14 +1,13 @@
 import React from 'react';
 import GlobalStyle from './styles/global';
 import Login from './screens/Login';
-import Providers from './hooks/Providers';
+import AppProvider from './hooks/AppProvider';
 
 const App: React.FC = () => (
   <>
-    <Providers>
+    <AppProvider>
       <Login />
-    </Providers>
-
+    </AppProvider>
     <GlobalStyle />
   </>
 );
