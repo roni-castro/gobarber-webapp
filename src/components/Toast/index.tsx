@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   FiAlertCircle,
   FiCheckCircle,
@@ -23,6 +23,14 @@ const iconTypes = {
 
 const Toast: React.FC<ToastProps> = ({ type, title, description, id }) => {
   const { removeToast } = ToastContext.useToast();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      removeToast(id);
+    }, 3000);
+    return () => clearTimeout(timer);
+  });
+
   return (
     <Container type={type} hasDescription={!!description}>
       {iconTypes[type || 'info']}
