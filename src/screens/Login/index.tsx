@@ -2,6 +2,7 @@ import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import React, { useCallback, useRef } from 'react';
 import { FiLock, FiLogIn, FiMail } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import Logo from '../../assets/logo.svg';
 import Button from '../../components/Button';
@@ -62,12 +63,12 @@ const Login: React.FC = () => {
             autoComplete="on"
           />
           <Button type="submit">Entrar</Button>
-          <a href="/forgot">Esqueci minha senha</a>
+          <Link to="/forgot">Esqueci minha senha</Link>
         </Form>
-        <a href="/signup">
+        <Link to="/signup">
           <FiLogIn />
           Criar conta
-        </a>
+        </Link>
       </Content>
       <Background />
     </Container>
