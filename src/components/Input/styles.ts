@@ -16,18 +16,18 @@ export const Container = styled.div<ContainerProps>`
   color: #666360;
   padding: 16px;
 
-  ${(props) =>
+  ${props =>
     props.isErrored &&
     css`
       border: 2px solid #c53030;
     `}
-  ${(props) =>
+  ${props =>
     props.isFocused &&
     css`
       color: #ff9000;
       border: 2px solid #ff9000;
     `}
-  ${(props) =>
+  ${props =>
     props.hasData &&
     css`
       color: #ff9000;

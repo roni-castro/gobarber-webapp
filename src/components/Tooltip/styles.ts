@@ -26,8 +26,7 @@ export const Container = styled.div<TooltipProps>`
     &::before {
       content: '';
       border-style: solid;
-      border-color: ${(props) =>
-    props.type === 'error' ? '#c53030' : '#ff9000'}
+      border-color: ${props => (props.type === 'error' ? '#c53030' : '#ff9000')}
         transparent;
       position: absolute;
       border-width: 6px 6px 0px 6px;
