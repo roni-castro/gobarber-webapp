@@ -1,5 +1,10 @@
 import React from 'react';
-import { FiAlertCircle, FiXCircle } from 'react-icons/fi';
+import {
+  FiAlertCircle,
+  FiCheckCircle,
+  FiInfo,
+  FiXCircle,
+} from 'react-icons/fi';
 import ToastContext from '../../hooks/ToastContext';
 import { Container } from './styles';
 
@@ -10,11 +15,17 @@ interface ToastProps {
   description?: string;
 }
 
+const iconTypes = {
+  info: <FiInfo size={24} />,
+  success: <FiCheckCircle size={24} />,
+  error: <FiAlertCircle size={24} />,
+};
+
 const Toast: React.FC<ToastProps> = ({ type, title, description, id }) => {
   const { removeToast } = ToastContext.useToast();
   return (
     <Container type={type} hasDescription={!!description}>
-      <FiAlertCircle size={20} />
+      {iconTypes[type || 'info']}
       <div>
         <h1>{title}</h1>
         {description && <p>{description}</p>}
