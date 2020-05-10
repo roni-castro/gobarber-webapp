@@ -7,7 +7,7 @@ import * as Yup from 'yup';
 import Logo from '../../assets/logo.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { Background, Container, Content } from './styles';
+import { Background, Container, Content, AnimationContainer } from './styles';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
 import AuthContext from '../../hooks/AuthContext';
 import ToastContext from '../../hooks/ToastContext';
@@ -51,24 +51,26 @@ const Login: React.FC = () => {
   return (
     <Container>
       <Content>
-        <img src={Logo} alt="GoBarber logo" />
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Faça seu logon</h1>
-          <Input name="email" icon={FiMail} placeholder="E-mail" />
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-            autoComplete="on"
-          />
-          <Button type="submit">Entrar</Button>
-          <Link to="/forgot">Esqueci minha senha</Link>
-        </Form>
-        <Link to="/signup">
-          <FiLogIn />
-          Criar conta
-        </Link>
+        <AnimationContainer>
+          <img src={Logo} alt="GoBarber logo" />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Faça seu logon</h1>
+            <Input name="email" icon={FiMail} placeholder="E-mail" />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+              autoComplete="on"
+            />
+            <Button type="submit">Entrar</Button>
+            <Link to="/forgot">Esqueci minha senha</Link>
+          </Form>
+          <Link to="/signup">
+            <FiLogIn />
+            Criar conta
+          </Link>
+        </AnimationContainer>
       </Content>
       <Background />
     </Container>
