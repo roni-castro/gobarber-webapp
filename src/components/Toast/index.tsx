@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import {
   FiAlertCircle,
   FiCheckCircle,
@@ -13,6 +13,7 @@ interface ToastProps {
   type?: 'success' | 'info' | 'error';
   title?: string;
   description?: string;
+  style: object;
 }
 
 const iconTypes = {
@@ -21,28 +22,29 @@ const iconTypes = {
   error: <FiAlertCircle size={24} />,
 };
 
-const Toast: React.FC<ToastProps> = ({ type, title, description, id }) => {
-  const { removeToast } = ToastContext.useToast();
+const Toast: React.FC<ToastProps> = memo(
+  ({ type, title, description, id, style }) => {
+    const { removeToast } = ToastContext.useToast();
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        removeToast(id);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }, [removeToast, id]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      removeToast(id);
-    }, 3000);
-    return () => clearTimeout(timer);
-  });
-
-  return (
-    <Container type={type} hasDescription={!!description}>
-      {iconTypes[type || 'info']}
-      <div>
-        <h1>{title}</h1>
-        {description && <p>{description}</p>}
-      </div>
-      <button type="button" onClick={() => removeToast(id)}>
-        <FiXCircle size={18} />
-      </button>
-    </Container>
-  );
-};
+    return (
+      <Container type={type} hasDescription={!!description} style={style}>
+        {iconTypes[type || 'info']}
+        <div>
+          <h1>{title}</h1>
+          {description && <p>{description}</p>}
+        </div>
+        <button type="button" onClick={() => removeToast(id)}>
+          <FiXCircle size={18} />
+        </button>
+      </Container>
+    );
+  },
+);
 
 export default Toast;

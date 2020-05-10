@@ -59,6 +59,7 @@ const Login: React.FC = () => {
             icon={FiLock}
             type="password"
             placeholder="Senha"
+            autoComplete="on"
           />
           <Button type="submit">Entrar</Button>
           <a href="/forgot">Esqueci minha senha</a>
