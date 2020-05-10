@@ -1,12 +1,12 @@
 import React from 'react';
-import GlobalStyle from './styles/global';
-import Login from './screens/Login';
 import AppProvider from './hooks/AppProvider';
+import Routes from './routes';
+import GlobalStyle from './styles/global';
 
 const App: React.FC = () => (
   <>
     <AppProvider>
-      <Login />
+      <Routes />
     </AppProvider>
     <GlobalStyle />
   </>
