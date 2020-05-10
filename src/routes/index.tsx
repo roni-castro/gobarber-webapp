@@ -1,12 +1,15 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
+import CustomRoute from './CustomRoute';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
+import Dashboard from '../screens/Dashboard';
 
 const Routes: React.FC = () => (
   <Switch>
-    <Route path="/" exact component={Login} />
-    <Route path="/signup" exact component={Signup} />
+    <CustomRoute path="/" exact component={Login} />
+    <CustomRoute path="/signup" component={Signup} />
+    <CustomRoute path="/dashboard" component={Dashboard} isPrivate />
   </Switch>
 );
 
