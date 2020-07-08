@@ -33,7 +33,11 @@ const Toast: React.FC<ToastProps> = memo(
     }, [removeToast, id]);
 
     return (
-      <Container type={type} hasDescription={!!description} style={style}>
+      <Container
+        type={type}
+        hasdescription={Number(!!description)}
+        style={style}
+      >
         {iconTypes[type || 'info']}
         <div>
           <h1>{title}</h1>
