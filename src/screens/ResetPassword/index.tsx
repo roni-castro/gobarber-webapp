@@ -1,0 +1,97 @@
+import React, { useCallback, useRef, useState } from 'react';
+import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+import { FiLock } from 'react-icons/fi';
+import * as Yup from 'yup';
+import Logo from '../../assets/logo.svg';
+import Button from '../../components/Button';
+import Input from '../../components/Input';
+import ToastContext from '../../hooks/ToastContext';
+import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
+import { AnimationContainer, Container, Content, Background } from './styles';
+import { resetPassword } from '../../data/services/user/resetPassword';
+import { useLocation, useHistory } from 'react-router-dom';
+
+interface FormResetPasswordData {
+  password: string;
+  confirmationPassword: string;
+}
+
+const ResetPassword: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
+  const { addToast } = ToastContext.useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const history = useHistory();
+
+  const handleSubmit = useCallback(
+    async (data: FormResetPasswordData) => {
+      try {
+        setIsLoading(true);
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          password: Yup.string().required(),
+          confirmationPassword: Yup.string().when('password', {
+            is: val => (val && val.length > 0 ? true : false),
+            then: Yup.string().oneOf(
+              [Yup.ref('password')],
+              'As senhas precisam ser iguais',
+            ),
+          }),
+        });
+        await schema.validate(data, { abortEarly: false });
+        const params = new URLSearchParams(location.search);
+        await resetPassword({
+          token: params.get('token') || '',
+          password: data.password,
+          confirmPassword: data.confirmationPassword,
+        });
+        history.push('/');
+      } catch (e) {
+        if (e instanceof Yup.ValidationError) {
+          formRef.current?.setErrors(mapValidationErrorToErrorObject(e));
+          return;
+        }
+        addToast({
+          type: 'error',
+          title: 'Erro ao resetar a senha',
+          description: 'Ocorreu um erro ao resetar a senha. Tente novamente!',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [addToast, location, history],
+  );
+
+  return (
+    <Container>
+      <Content>
+        <AnimationContainer>
+          <img src={Logo} alt="GoBarber logo" />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Resetar senha</h1>
+            <Input
+              name="password"
+              type="password"
+              icon={FiLock}
+              placeholder="Nova senha"
+            />
+            <Input
+              type="password"
+              name="confirmationPassword"
+              icon={FiLock}
+              placeholder="Confirmação da senha"
+            />
+            <Button isLoading={isLoading} type="submit">
+              Alterar senha
+            </Button>
+          </Form>
+        </AnimationContainer>
+      </Content>
+      <Background />
+    </Container>
+  );
+};
+
+export default ResetPassword;

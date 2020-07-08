@@ -5,6 +5,7 @@ import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import Dashboard from '../screens/Dashboard';
 import ForgotPassword from '../screens/ForgotPassword';
+import ResetPassword from '../screens/ResetPassword';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -12,6 +13,7 @@ const Routes: React.FC = () => (
     <CustomRoute path="/signup" component={Signup} />
     <CustomRoute path="/dashboard" component={Dashboard} isPrivate />
     <CustomRoute path="/forgot-password" component={ForgotPassword} />
+    <CustomRoute path="/reset-password" component={ResetPassword} />
   </Switch>
 );
 

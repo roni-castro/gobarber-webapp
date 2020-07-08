@@ -10,7 +10,7 @@ import Input from '../../components/Input';
 import { Background, Container, Content, AnimationContainer } from './styles';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
 import ToastContext from '../../hooks/ToastContext';
-import { forgotPassword } from '../../data/services/forgotPassword';
+import { forgotPassword } from '../../data/services/user/forgotPassword';
 
 interface ForgotPasswordData {
   email: string;
