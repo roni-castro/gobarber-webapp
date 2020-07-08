@@ -40,9 +40,12 @@ const ResetPassword: React.FC = () => {
           }),
         });
         await schema.validate(data, { abortEarly: false });
-        const params = new URLSearchParams(location.search);
+        const token = new URLSearchParams(location.search).get('token');
+        if (!token) {
+          throw new Error('Token not found');
+        }
         await resetPassword({
-          token: params.get('token') || '',
+          token,
           password: data.password,
           confirmPassword: data.confirmationPassword,
         });
