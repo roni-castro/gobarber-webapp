@@ -15,7 +15,7 @@ const Dashboard: React.FC = () => {
         <HeaderContent>
           <img src={Logo} alt="Gobarber logo" />
           <Profile>
-            <img src={user.avatar_url} alt="Profile image" />
+            <img src={user.avatar_url} alt="Profile" />
             <div>
               <span>Bem vindo,</span>
               <strong>{user.name}</strong>
