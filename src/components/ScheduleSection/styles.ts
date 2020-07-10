@@ -25,12 +25,15 @@ export const Container = styled.div`
   ul {
     list-style-type: none;
   }
+
+  li + li {
+    margin-top: 16px;
+  }
 `;
 
 export const AppointmentItem = styled.aside`
   display: flex;
   align-items: center;
-  margin-top: 16px;
 
   span {
     min-width: 70px;

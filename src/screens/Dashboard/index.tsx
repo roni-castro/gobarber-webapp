@@ -20,6 +20,7 @@ import {
 
 const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<AppointmentData[]>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const {
     signOut,
     auth: { user },
@@ -45,13 +46,9 @@ const Dashboard: React.FC = () => {
     );
   }, [appointments]);
 
-  const today = useMemo(() => {
-    return new Date();
-  }, []);
-
   const todayDayOfWeek = useMemo(() => {
-    return format(today, 'EEEE', { locale: pt });
-  }, [today]);
+    return format(selectedDate, 'EEEE', { locale: pt });
+  }, [selectedDate]);
 
   return (
     <Container>
@@ -75,7 +72,7 @@ const Dashboard: React.FC = () => {
           <h1>Horários agendados</h1>
           <p>
             <span>Hoje</span>
-            <span>{`Dia ${today.getDate()}`}</span>
+            <span>{`Dia ${selectedDate.getDate()}`}</span>
             <span>{todayDayOfWeek}</span>
           </p>
           <NextAppointment>
