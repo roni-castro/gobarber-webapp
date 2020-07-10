@@ -6,7 +6,6 @@ interface ResetPasswordBody {
   confirmPassword: string;
 }
 
-export const resetPassword = async (body: ResetPasswordBody) => {
-  const data = await api.post('/password/reset', body);
-  return data;
+export const resetPassword = (body: ResetPasswordBody) => {
+  return api.post('/password/reset', body);
 };
