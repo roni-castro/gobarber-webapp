@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import api from '../data/api';
-import { AuthDTO, UserDTO } from '../data/models/AuthDTO';
+import AuthDTO from '../data/models/AuthDTO';
+import UserData from '../data/models/UserData';
 import { USER_INFO, TOKEN } from '../data/auth/authStorageConstants';
 import {
   getStorageItem,
@@ -9,7 +10,7 @@ import {
 } from '../utils/storage';
 
 interface Auth {
-  user: UserDTO;
+  user: UserData;
   token: string;
 }
 
@@ -33,7 +34,7 @@ const useAuth = (): AuthContextData => {
 
 const AuthProvider: React.FC = (props: any): JSX.Element => {
   const [auth, setAuth] = useState<Auth>(() => {
-    const user = getStorageItem<UserDTO>(USER_INFO);
+    const user = getStorageItem<UserData>(USER_INFO);
     const token = getStorageItem<string>(TOKEN);
     if (user && token) {
       return { user, token };
