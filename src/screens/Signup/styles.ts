@@ -42,7 +42,7 @@ export const AnimationContent = styled.div`
     flex-direction: column;
     text-align: center;
 
-    h1 {
+    span {
       margin-bottom: 24px;
     }
   }
