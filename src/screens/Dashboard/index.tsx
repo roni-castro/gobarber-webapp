@@ -1,4 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { FiPower, FiClock } from 'react-icons/fi';
+import { parseISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt-BR';
+import Logo from '../../assets/logo.svg';
+import AuthContext from '../../hooks/AuthContext';
+import ScheduleSection from '../../components/ScheduleSection';
+import { getProviderAppointments } from '../../data/services/appointment/providerAppointments';
+import AppointmentData from '../../data/models/AppointmentData';
 import {
   Container,
   Header,
@@ -9,15 +17,42 @@ import {
   Calendar,
   NextAppointment,
 } from './styles';
-import Logo from '../../assets/logo.svg';
-import { FiPower, FiClock } from 'react-icons/fi';
-import AuthContext from '../../hooks/AuthContext';
 
 const Dashboard: React.FC = () => {
+  const [appointments, setAppointments] = useState<AppointmentData[]>([]);
   const {
     signOut,
     auth: { user },
   } = AuthContext.useAuth();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const appointments = await getProviderAppointments<AppointmentData[]>();
+      setAppointments(appointments);
+    };
+    fetchData();
+  }, []);
+
+  const morningAppointments = useMemo(() => {
+    return appointments.filter(
+      appointment => parseISO(appointment.date).getHours() < 12,
+    );
+  }, [appointments]);
+
+  const afternoonAppointments = useMemo(() => {
+    return appointments.filter(
+      appointment => parseISO(appointment.date).getHours() >= 12,
+    );
+  }, [appointments]);
+
+  const today = useMemo(() => {
+    return new Date();
+  }, []);
+
+  const todayDayOfWeek = useMemo(() => {
+    return format(today, 'EEEE', { locale: pt });
+  }, [today]);
+
   return (
     <Container>
       <Header>
@@ -40,25 +75,29 @@ const Dashboard: React.FC = () => {
           <h1>Horários agendados</h1>
           <p>
             <span>Hoje</span>
-            <span>Dia 06</span>
-            <span>Segunda</span>
+            <span>{`Dia ${today.getDate()}`}</span>
+            <span>{todayDayOfWeek}</span>
           </p>
           <NextAppointment>
             <strong>Atendimento a seguir</strong>
-            <div>
-              <img
-                src={
-                  'https://avatars3.githubusercontent.com/u/24610813?s=460&u=78feed84554e58d426b666e04fce83b174230889&v=4'
-                }
-                alt="Profile"
-              />
-              <strong>{user.name}</strong>
-              <span>
-                <FiClock />
-                08:00
-              </span>
-            </div>
+            {appointments.length > 0 ? (
+              <div>
+                <img
+                  src={appointments[0].client.avatar_url}
+                  alt={appointments[0].client.name}
+                />
+                <strong>{appointments[0].client.name}</strong>
+                <span>
+                  <FiClock />
+                  {format(parseISO(appointments[0].date), 'HH:mm')}
+                </span>
+              </div>
+            ) : (
+              <p>Nenhum agendamento</p>
+            )}
           </NextAppointment>
+          <ScheduleSection title="Manhã" appointments={morningAppointments} />
+          <ScheduleSection title="Tarde" appointments={afternoonAppointments} />
         </Schedule>
         <Calendar />
       </Content>

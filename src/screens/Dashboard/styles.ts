@@ -114,6 +114,10 @@ export const NextAppointment = styled.div`
     color: #999591;
   }
 
+  p {
+    margin-top: 20px;
+  }
+
   div {
     display: flex;
     align-items: center;
