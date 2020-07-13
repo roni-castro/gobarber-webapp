@@ -1,4 +1,3 @@
-import { format, parseISO } from 'date-fns';
 import React, { memo } from 'react';
 import { FiClock } from 'react-icons/fi';
 import { AppointmentItem, Container } from './styles';
@@ -6,6 +5,7 @@ import { AppointmentItem, Container } from './styles';
 interface Appointment {
   id: string;
   date: string;
+  hourFormatted: string;
   client: {
     name: string;
     avatar_url: string;
@@ -30,7 +30,7 @@ const ScheduleSection: React.FC<ScheduleSectionProps> = memo(
               <AppointmentItem>
                 <span>
                   <FiClock />
-                  {format(parseISO(appointment.date), 'HH:mm')}
+                  {appointment.hourFormatted}
                 </span>
                 <div>
                   <img

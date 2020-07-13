@@ -23,8 +23,20 @@ import {
   Schedule,
 } from './styles';
 
+interface Appointment {
+  id: string;
+  date: string;
+  hourFormatted: string;
+  client: {
+    id: string;
+    email: string;
+    name: string;
+    avatar_url: string;
+  };
+}
+
 const Dashboard: React.FC = () => {
-  const [appointments, setAppointments] = useState<AppointmentData[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [monthsAvailability, setMonthAvailability] = useState<
@@ -44,8 +56,18 @@ const Dashboard: React.FC = () => {
         month: selectedDate.getMonth() + 1,
         year: selectedDate.getFullYear(),
       });
-      setAppointments(appointments);
+      setAppointments(mapToAppointments(appointments));
     };
+
+    const mapToAppointments = (apointments: AppointmentData[]) => {
+      return apointments.map(appointment => {
+        return {
+          ...appointment,
+          hourFormatted: format(parseISO(appointment.date), 'HH:mm'),
+        };
+      });
+    };
+
     fetchData();
   }, [selectedDate]);
 
@@ -153,7 +175,7 @@ const Dashboard: React.FC = () => {
                 <strong>{appointments[0].client.name}</strong>
                 <span>
                   <FiClock />
-                  {format(parseISO(appointments[0].date), 'HH:mm')}
+                  {appointments[0].hourFormatted}
                 </span>
               </div>
             ) : (
