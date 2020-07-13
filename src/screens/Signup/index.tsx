@@ -1,16 +1,16 @@
-import React, { useCallback, useRef } from 'react';
-import * as Yup from 'yup';
-import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
-import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
+import { Form } from '@unform/web';
+import React, { useCallback, useRef } from 'react';
+import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
+import * as Yup from 'yup';
 import Logo from '../../assets/logo.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
-import { Background, Container, Content, AnimationContent } from './styles';
-import ToastContext from '../../hooks/ToastContext';
 import api from '../../data/api';
+import ToastContext from '../../hooks/ToastContext';
+import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
+import { AnimationContent, Background, Container, Content } from './styles';
 
 interface InputData {
   name: string;

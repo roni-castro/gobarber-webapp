@@ -1,8 +1,8 @@
 import React from 'react';
 import {
+  Redirect,
   Route as ReactDOMRoute,
   RouteProps as ReactDOMRouteProps,
-  Redirect,
 } from 'react-router-dom';
 import AuthContext from '../hooks/AuthContext';
 

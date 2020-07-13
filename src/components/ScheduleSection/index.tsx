@@ -1,6 +1,6 @@
+import { format, parseISO } from 'date-fns';
 import React, { memo } from 'react';
 import { FiClock } from 'react-icons/fi';
-import { format, parseISO } from 'date-fns';
 import { AppointmentItem, Container } from './styles';
 
 interface Appointment {

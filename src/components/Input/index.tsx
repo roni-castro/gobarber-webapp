@@ -1,11 +1,11 @@
+import { useField } from '@unform/core';
 import React, {
   InputHTMLAttributes,
-  useRef,
-  useEffect,
-  useState,
   useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
-import { useField } from '@unform/core';
 import { IconBaseProps } from 'react-icons';
 import { FiAlertCircle } from 'react-icons/fi';
 import { Container, Error } from './styles';

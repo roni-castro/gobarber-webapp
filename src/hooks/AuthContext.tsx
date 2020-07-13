@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import api from '../data/api';
+import { TOKEN, USER_INFO } from '../data/auth/authStorageConstants';
 import AuthDTO from '../data/models/AuthDTO';
 import UserData from '../data/models/UserData';
-import { USER_INFO, TOKEN } from '../data/auth/authStorageConstants';
 import {
   getStorageItem,
-  setStorageItem,
   removeStorageItem,
+  setStorageItem,
 } from '../utils/storage';
 
 interface Auth {

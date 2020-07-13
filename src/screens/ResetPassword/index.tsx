@@ -1,16 +1,16 @@
-import React, { useCallback, useRef, useState } from 'react';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
+import React, { useCallback, useRef, useState } from 'react';
 import { FiLock } from 'react-icons/fi';
+import { useHistory, useLocation } from 'react-router-dom';
 import * as Yup from 'yup';
 import Logo from '../../assets/logo.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { resetPassword } from '../../data/services/user/resetPassword';
 import ToastContext from '../../hooks/ToastContext';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
-import { AnimationContainer, Container, Content, Background } from './styles';
-import { resetPassword } from '../../data/services/user/resetPassword';
-import { useLocation, useHistory } from 'react-router-dom';
+import { AnimationContainer, Background, Container, Content } from './styles';
 
 interface FormResetPasswordData {
   password: string;

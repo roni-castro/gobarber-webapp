@@ -7,10 +7,10 @@ import * as Yup from 'yup';
 import Logo from '../../assets/logo.svg';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { Background, Container, Content, AnimationContainer } from './styles';
-import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
 import AuthContext from '../../hooks/AuthContext';
 import ToastContext from '../../hooks/ToastContext';
+import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
+import { AnimationContainer, Background, Container, Content } from './styles';
 
 interface LoginInputData {
   email: string;

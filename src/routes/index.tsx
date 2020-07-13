@@ -1,11 +1,11 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
-import CustomRoute from './CustomRoute';
-import Login from '../screens/Login';
-import Signup from '../screens/Signup';
 import Dashboard from '../screens/Dashboard';
 import ForgotPassword from '../screens/ForgotPassword';
+import Login from '../screens/Login';
 import ResetPassword from '../screens/ResetPassword';
+import Signup from '../screens/Signup';
+import CustomRoute from './CustomRoute';
 
 const Routes: React.FC = () => (
   <Switch>

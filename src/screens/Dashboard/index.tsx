@@ -1,21 +1,21 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { FiPower, FiClock } from 'react-icons/fi';
-import { parseISO, format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
+import React, { useEffect, useMemo, useState } from 'react';
+import { FiClock, FiPower } from 'react-icons/fi';
 import Logo from '../../assets/logo.svg';
-import AuthContext from '../../hooks/AuthContext';
 import ScheduleSection from '../../components/ScheduleSection';
-import { getProviderAppointments } from '../../data/services/appointment/providerAppointments';
 import AppointmentData from '../../data/models/AppointmentData';
+import { getProviderAppointments } from '../../data/services/appointment/providerAppointments';
+import AuthContext from '../../hooks/AuthContext';
 import {
+  Calendar,
   Container,
+  Content,
   Header,
   HeaderContent,
-  Profile,
-  Content,
-  Schedule,
-  Calendar,
   NextAppointment,
+  Profile,
+  Schedule,
 } from './styles';
 
 const Dashboard: React.FC = () => {
