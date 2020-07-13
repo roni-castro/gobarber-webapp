@@ -4,7 +4,6 @@ import { AppointmentItem, Container } from './styles';
 
 interface Appointment {
   id: string;
-  date: string;
   hourFormatted: string;
   client: {
     name: string;

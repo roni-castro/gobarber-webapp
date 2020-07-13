@@ -1,4 +1,4 @@
-import { format, isToday, parseISO } from 'date-fns';
+import { format, isAfter, isToday, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import DayPicker, { DayModifiers } from 'react-day-picker';
@@ -25,7 +25,7 @@ import {
 
 interface Appointment {
   id: string;
-  date: string;
+  date: Date;
   hourFormatted: string;
   client: {
     id: string;
@@ -63,6 +63,7 @@ const Dashboard: React.FC = () => {
       return apointments.map(appointment => {
         return {
           ...appointment,
+          date: parseISO(appointment.date),
           hourFormatted: format(parseISO(appointment.date), 'HH:mm'),
         };
       });
@@ -72,14 +73,12 @@ const Dashboard: React.FC = () => {
   }, [selectedDate]);
 
   const morningAppointments = useMemo(() => {
-    return appointments.filter(
-      appointment => parseISO(appointment.date).getHours() < 12,
-    );
+    return appointments.filter(appointment => appointment.date.getHours() < 12);
   }, [appointments]);
 
   const afternoonAppointments = useMemo(() => {
     return appointments.filter(
-      appointment => parseISO(appointment.date).getHours() >= 12,
+      appointment => appointment.date.getHours() >= 12,
     );
   }, [appointments]);
 
@@ -91,17 +90,12 @@ const Dashboard: React.FC = () => {
     return format(selectedDate, "'Dia' dd 'de' MMMM", { locale: ptBR });
   }, [selectedDate]);
 
-  const handleDayClick = useCallback(
-    (day: Date, modifiers: DayModifiers) => {
-      const isDayAvailabale =
-        monthsAvailability[day.getDate() - 1].availability;
-      if (!modifiers.available || !isDayAvailabale) {
-        return;
-      }
-      setSelectedDate(day);
-    },
-    [monthsAvailability],
-  );
+  const handleDayClick = useCallback((day: Date, modifiers: DayModifiers) => {
+    if (!modifiers.available || modifiers.disabled) {
+      return;
+    }
+    setSelectedDate(day);
+  }, []);
 
   const handleMonthChange = useCallback((month: Date) => {
     setSelectedMonth(month);
@@ -139,6 +133,12 @@ const Dashboard: React.FC = () => {
     selectedDate,
   ]);
 
+  const nextAppointment = useMemo(() => {
+    return appointments.find(appointment =>
+      isAfter(appointment.date, new Date()),
+    );
+  }, [appointments]);
+
   return (
     <Container>
       <Header>
@@ -166,16 +166,16 @@ const Dashboard: React.FC = () => {
           </p>
           <NextAppointment>
             <strong>Atendimento a seguir</strong>
-            {appointments.length > 0 ? (
+            {isSelectedDateToday && nextAppointment ? (
               <div>
                 <img
-                  src={appointments[0].client.avatar_url}
-                  alt={appointments[0].client.name}
+                  src={nextAppointment.client.avatar_url}
+                  alt={nextAppointment.client.name}
                 />
-                <strong>{appointments[0].client.name}</strong>
+                <strong>{nextAppointment.client.name}</strong>
                 <span>
                   <FiClock />
-                  {appointments[0].hourFormatted}
+                  {nextAppointment.hourFormatted}
                 </span>
               </div>
             ) : (
