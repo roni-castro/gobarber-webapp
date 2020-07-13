@@ -6,13 +6,22 @@ interface AppointmentParams {
   year: number;
 }
 
-export const getProviderAppointments = async <R>() => {
-  const date = new Date();
+interface GetProviderAppointmentDTO {
+  day: number;
+  month: number;
+  year: number;
+}
+
+export const getProviderAppointments = async <R>({
+  day,
+  month,
+  year,
+}: GetProviderAppointmentDTO) => {
   const response = await api.get<R>('/appointments/me', {
     params: {
-      day: date.getDate(),
-      month: date.getMonth() + 1,
-      year: date.getFullYear(),
+      day,
+      month,
+      year,
     } as AppointmentParams,
   });
   return response.data;

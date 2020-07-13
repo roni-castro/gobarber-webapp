@@ -1,5 +1,5 @@
-import { format, parseISO } from 'date-fns';
-import pt from 'date-fns/locale/pt-BR';
+import { format, isToday, parseISO } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
@@ -39,11 +39,15 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const appointments = await getProviderAppointments<AppointmentData[]>();
+      const appointments = await getProviderAppointments<AppointmentData[]>({
+        day: selectedDate.getDate(),
+        month: selectedDate.getMonth() + 1,
+        year: selectedDate.getFullYear(),
+      });
       setAppointments(appointments);
     };
     fetchData();
-  }, []);
+  }, [selectedDate]);
 
   const morningAppointments = useMemo(() => {
     return appointments.filter(
@@ -58,7 +62,11 @@ const Dashboard: React.FC = () => {
   }, [appointments]);
 
   const todayDayOfWeek = useMemo(() => {
-    return format(selectedDate, 'EEEE', { locale: pt });
+    return format(selectedDate, 'EEEE', { locale: ptBR });
+  }, [selectedDate]);
+
+  const selectedDateAsText = useMemo(() => {
+    return format(selectedDate, "'Dia' dd 'de' MMMM", { locale: ptBR });
   }, [selectedDate]);
 
   const handleDayClick = useCallback(
@@ -105,14 +113,9 @@ const Dashboard: React.FC = () => {
       });
   }, [monthsAvailability, selectedMonth]);
 
-  const isSelectedDayToday = useMemo(() => {
-    const now = new Date();
-    return (
-      selectedDate.getFullYear() === now.getFullYear() &&
-      selectedDate.getMonth() === now.getMonth() &&
-      selectedDate.getDate() === now.getDate()
-    );
-  }, [selectedDate]);
+  const isSelectedDateToday = useMemo(() => isToday(selectedDate), [
+    selectedDate,
+  ]);
 
   return (
     <Container>
@@ -135,8 +138,8 @@ const Dashboard: React.FC = () => {
         <Schedule>
           <h1>Horários agendados</h1>
           <p>
-            {isSelectedDayToday && <span>Hoje</span>}
-            <span>{`Dia ${selectedDate.getDate()}`}</span>
+            {isSelectedDateToday && <span>Hoje</span>}
+            <span>{selectedDateAsText}</span>
             <span>{todayDayOfWeek}</span>
           </p>
           <NextAppointment>
