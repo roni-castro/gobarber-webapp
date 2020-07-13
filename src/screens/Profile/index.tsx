@@ -1,11 +1,12 @@
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import React, { useCallback, useRef } from 'react';
+import React, { ChangeEvent, useCallback, useRef } from 'react';
 import { FiArrowLeft, FiCamera, FiLock, FiMail, FiUser } from 'react-icons/fi';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
+import { updateAvatar } from '../../data/services/user/profile';
 import AuthContext from '../../hooks/AuthContext';
 import ToastContext from '../../hooks/ToastContext';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
@@ -73,6 +74,29 @@ const Profile: React.FC = () => {
     [addToast, history],
   );
 
+  const handleAvatarChange = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const data = new FormData();
+        data.append('avatar', e.target.files[0]);
+        try {
+          await updateAvatar(data);
+          addToast({
+            type: 'success',
+            title: 'Avatar atualizado com sucesso',
+          });
+        } catch (error) {
+          addToast({
+            type: 'error',
+            title: 'Erro ao atualizar o avatar',
+            description: error.response.data?.message,
+          });
+        }
+      }
+    },
+    [addToast],
+  );
+
   return (
     <Container>
       <header>
@@ -83,12 +107,20 @@ const Profile: React.FC = () => {
         </div>
       </header>
       <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
+        <Form
+          ref={formRef}
+          initialData={{
+            name: user.name,
+            email: user.email,
+          }}
+          onSubmit={handleSubmit}
+        >
           <AvatarInput>
             <img src={user.avatar_url} alt={user.name} />
-            <button type="button">
+            <label htmlFor="avatar">
               <FiCamera />
-            </button>
+              <input type="file" id="avatar" onChange={handleAvatarChange} />
+            </label>
           </AvatarInput>
           <h1>Meu perfil</h1>
           <Input name="name" icon={FiUser} placeholder="Nome" />
