@@ -61,6 +61,16 @@ export const Profile = styled.div`
     align-items: flex-start;
     line-height: 24px;
 
+    a {
+      text-decoration: none;
+      color: #ff9000;
+      transform: color 0.2s;
+
+      &:hover {
+        color: ${shade(0.2, '#ff9000')};
+      }
+    }
+
     span {
       font-size: 14px;
       color: #f4ede8;
