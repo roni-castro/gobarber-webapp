@@ -7,8 +7,11 @@ import { FiClock, FiPower } from 'react-icons/fi';
 import Logo from '../../assets/logo.svg';
 import ScheduleSection from '../../components/ScheduleSection';
 import AppointmentData from '../../data/models/AppointmentData';
+import { AppointmentMonthAvailabilityResponse } from '../../data/models/AppointmentMonthAvailabilityData';
 import { getProviderAppointments } from '../../data/services/appointment/providerAppointments';
+import { getProviderMonthAvailability } from '../../data/services/appointment/providerAvailability';
 import AuthContext from '../../hooks/AuthContext';
+import ToastContext from '../../hooks/ToastContext';
 import {
   Calendar,
   Container,
@@ -23,10 +26,16 @@ import {
 const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<AppointmentData[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedMonth, setSelectedMonth] = useState(new Date());
+  const [monthsAvailability, setMonthAvailability] = useState<
+    AppointmentMonthAvailabilityResponse
+  >([]);
   const {
     signOut,
     auth: { user },
   } = AuthContext.useAuth();
+
+  const { addToast } = ToastContext.useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,12 +61,58 @@ const Dashboard: React.FC = () => {
     return format(selectedDate, 'EEEE', { locale: pt });
   }, [selectedDate]);
 
-  const handleDayClick = useCallback((day: Date, modifiers: DayModifiers) => {
-    if (!modifiers.available) {
-      return;
-    }
-    setSelectedDate(day);
+  const handleDayClick = useCallback(
+    (day: Date, modifiers: DayModifiers) => {
+      const isDayAvailabale =
+        monthsAvailability[day.getDate() - 1].availability;
+      if (!modifiers.available || !isDayAvailabale) {
+        return;
+      }
+      setSelectedDate(day);
+    },
+    [monthsAvailability],
+  );
+
+  const handleMonthChange = useCallback((month: Date) => {
+    setSelectedMonth(month);
   }, []);
+
+  useEffect(() => {
+    getProviderMonthAvailability<AppointmentMonthAvailabilityResponse>({
+      userId: user.id,
+      month: selectedMonth.getMonth() + 1,
+      year: selectedMonth.getFullYear(),
+    })
+      .then(data => {
+        setMonthAvailability(data);
+      })
+      .catch(() => {
+        addToast({
+          type: 'error',
+          title: 'Erro ao carregar disponibilidade do mês',
+          description: `Não foi possivel carregar a disponibilidade do mês ${selectedMonth.getMonth()}. Tente novamente!`,
+        });
+      });
+  }, [selectedMonth, addToast, user.id]);
+
+  const disabledDaysInMonth = useMemo(() => {
+    return monthsAvailability
+      .filter(monthAvailability => monthAvailability.availability === false)
+      .map(monthAvailability => {
+        const year = selectedMonth.getFullYear();
+        const month = selectedMonth.getMonth();
+        return new Date(year, month, monthAvailability.day);
+      });
+  }, [monthsAvailability, selectedMonth]);
+
+  const isSelectedDayToday = useMemo(() => {
+    const now = new Date();
+    return (
+      selectedDate.getFullYear() === now.getFullYear() &&
+      selectedDate.getMonth() === now.getMonth() &&
+      selectedDate.getDate() === now.getDate()
+    );
+  }, [selectedDate]);
 
   return (
     <Container>
@@ -80,7 +135,7 @@ const Dashboard: React.FC = () => {
         <Schedule>
           <h1>Horários agendados</h1>
           <p>
-            <span>Hoje</span>
+            {isSelectedDayToday && <span>Hoje</span>}
             <span>{`Dia ${selectedDate.getDate()}`}</span>
             <span>{todayDayOfWeek}</span>
           </p>
@@ -107,10 +162,11 @@ const Dashboard: React.FC = () => {
         </Schedule>
         <Calendar>
           <DayPicker
-            disabledDays={[{ daysOfWeek: [0, 6] }]}
             selectedDays={[selectedDate]}
             fromMonth={new Date()}
             onDayClick={handleDayClick}
+            onMonthChange={handleMonthChange}
+            disabledDays={[...disabledDaysInMonth, { daysOfWeek: [0, 6] }]}
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
             months={[
               'Janeiro',
