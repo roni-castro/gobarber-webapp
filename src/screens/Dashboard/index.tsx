@@ -1,6 +1,8 @@
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt-BR';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import DayPicker, { DayModifiers } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 import { FiClock, FiPower } from 'react-icons/fi';
 import Logo from '../../assets/logo.svg';
 import ScheduleSection from '../../components/ScheduleSection';
@@ -50,6 +52,13 @@ const Dashboard: React.FC = () => {
     return format(selectedDate, 'EEEE', { locale: pt });
   }, [selectedDate]);
 
+  const handleDayClick = useCallback((day: Date, modifiers: DayModifiers) => {
+    if (!modifiers.available) {
+      return;
+    }
+    setSelectedDate(day);
+  }, []);
+
   return (
     <Container>
       <Header>
@@ -96,7 +105,32 @@ const Dashboard: React.FC = () => {
           <ScheduleSection title="Manhã" appointments={morningAppointments} />
           <ScheduleSection title="Tarde" appointments={afternoonAppointments} />
         </Schedule>
-        <Calendar />
+        <Calendar>
+          <DayPicker
+            disabledDays={[{ daysOfWeek: [0, 6] }]}
+            selectedDays={[selectedDate]}
+            fromMonth={new Date()}
+            onDayClick={handleDayClick}
+            weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
+            months={[
+              'Janeiro',
+              'Fevereiro',
+              'Março',
+              'Abril',
+              'Maio',
+              'Junho',
+              'Julho',
+              'Agosto',
+              'Setembro',
+              'Outubro',
+              'Novembro',
+              'Dezembro',
+            ]}
+            modifiers={{
+              available: { daysOfWeek: [1, 2, 3, 4, 5] },
+            }}
+          />
+        </Calendar>
       </Content>
     </Container>
   );
