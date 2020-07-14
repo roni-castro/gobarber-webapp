@@ -3,7 +3,7 @@ import api from '../data/api';
 import { TOKEN, USER_INFO } from '../data/auth/authStorageConstants';
 import AuthDTO from '../data/models/AuthDTO';
 import UserData from '../data/models/UserData';
-import { updateAvatar } from '../data/services/user/profile';
+import { updateAvatar, updateUserInfo } from '../data/services/user/profile';
 import {
   getStorageItem,
   removeStorageItem,
@@ -15,11 +15,20 @@ interface Auth {
   token: string;
 }
 
+interface UpdateUserInfoParams {
+  name: string;
+  email: string;
+  oldPassword?: string;
+  password?: string;
+  passwordConfirmation?: string;
+}
+
 interface AuthContextData {
   auth: Auth;
   signIn(email: string, password: string): Promise<Auth>;
   signOut(): void;
   updateUserAvatar(formData: FormData): void;
+  updateUserProfile(data: UpdateUserInfoParams): void;
 }
 
 const defaultValue = {} as AuthContextData;
@@ -65,7 +74,16 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
   };
 
   const updateUserAvatar = useCallback(async (formData: FormData) => {
-    const user = await updateAvatar<UserData>(formData);
+    const user = await updateAvatar(formData);
+    setStorageItem(USER_INFO, user);
+    setAuth(auth => ({
+      ...auth,
+      user,
+    }));
+  }, []);
+
+  const updateUserProfile = useCallback(async (data: UpdateUserInfoParams) => {
+    const user = await updateUserInfo(data);
     setStorageItem(USER_INFO, user);
     setAuth(auth => ({
       ...auth,
@@ -75,7 +93,7 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
 
   return (
     <AuthContext.Provider
-      value={{ auth, signIn, signOut, updateUserAvatar }}
+      value={{ auth, signIn, signOut, updateUserAvatar, updateUserProfile }}
       {...props}
     />
   );
