@@ -53,13 +53,18 @@ const Profile: React.FC = () => {
             .oneOf([Yup.ref('password')], 'As senhas precisam ser iguais'),
         });
         await schema.validate(data, { abortEarly: false });
-        await updateUserProfile({
-          name: data.name,
-          email: data.email,
-          password: data.password || undefined,
-          passwordConfirmation: data.passwordConfirmation || undefined,
-          oldPassword: data.oldPassword || undefined,
-        });
+        const {
+          name,
+          email,
+          password,
+          passwordConfirmation,
+          oldPassword,
+        } = data;
+        const formData = Object.assign(
+          { name, email },
+          oldPassword ? { password, passwordConfirmation, oldPassword } : {},
+        );
+        await updateUserProfile(formData);
         addToast({
           type: 'success',
           title: 'Perfil atualizado com sucesso',
