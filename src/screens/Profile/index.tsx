@@ -6,7 +6,6 @@ import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { updateAvatar } from '../../data/services/user/profile';
 import AuthContext from '../../hooks/AuthContext';
 import ToastContext from '../../hooks/ToastContext';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
@@ -24,6 +23,7 @@ const Profile: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const {
     auth: { user },
+    updateUserAvatar,
   } = AuthContext.useAuth();
   const { addToast } = ToastContext.useToast();
   const history = useHistory();
@@ -80,7 +80,7 @@ const Profile: React.FC = () => {
         const data = new FormData();
         data.append('avatar', e.target.files[0]);
         try {
-          await updateAvatar(data);
+          await updateUserAvatar(data);
           addToast({
             type: 'success',
             title: 'Avatar atualizado com sucesso',

@@ -3,6 +3,7 @@ import api from '../data/api';
 import { TOKEN, USER_INFO } from '../data/auth/authStorageConstants';
 import AuthDTO from '../data/models/AuthDTO';
 import UserData from '../data/models/UserData';
+import { updateAvatar } from '../data/services/user/profile';
 import {
   getStorageItem,
   removeStorageItem,
@@ -18,6 +19,7 @@ interface AuthContextData {
   auth: Auth;
   signIn(email: string, password: string): Promise<Auth>;
   signOut(): void;
+  updateUserAvatar(formData: FormData): void;
 }
 
 const defaultValue = {} as AuthContextData;
@@ -62,7 +64,21 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
     setAuth({} as Auth);
   };
 
-  return <AuthContext.Provider value={{ auth, signIn, signOut }} {...props} />;
+  const updateUserAvatar = useCallback(async (formData: FormData) => {
+    const user = await updateAvatar<UserData>(formData);
+    setStorageItem(USER_INFO, user);
+    setAuth(auth => ({
+      ...auth,
+      user,
+    }));
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{ auth, signIn, signOut, updateUserAvatar }}
+      {...props}
+    />
+  );
 };
 
 export default {
