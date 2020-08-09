@@ -35,6 +35,14 @@
     "lint": "eslint --fix --ext .js --ext .jsx --ext .ts --ext .tsx src/",
     "prettier": "prettier --write '**/*.{ts,js,tsx,tsx}'"
   },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/screens/**/*.tsx",
+      "src/components/**/*.tsx",
+      "src/hooks/**/*.tsx",
+      "!src/hooks/index.tsx"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
