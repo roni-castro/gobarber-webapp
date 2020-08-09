@@ -60,10 +60,13 @@ const Profile: React.FC = () => {
           passwordConfirmation,
           oldPassword,
         } = data;
-        const formData = Object.assign(
-          { name, email },
-          oldPassword ? { password, passwordConfirmation, oldPassword } : {},
-        );
+        const formData = {
+          name,
+          email,
+          ...(oldPassword
+            ? { password, passwordConfirmation, oldPassword }
+            : {}),
+        };
         await updateUserProfile(formData);
         addToast({
           type: 'success',

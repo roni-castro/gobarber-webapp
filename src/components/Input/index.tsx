@@ -46,6 +46,7 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <Container
+      data-testid="input-container"
       isFocused={isFocused}
       hasData={hasData}
       isErrored={!!error}
