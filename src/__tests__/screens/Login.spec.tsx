@@ -1,23 +1,22 @@
 import { fireEvent, render, wait } from '@testing-library/react';
 import React from 'react';
-import AuthContext from '../../hooks/AuthContext';
 import ToastContext from '../../hooks/ToastContext';
 import Login from '../../screens/Login';
 
+const mockSignIn = jest.fn();
+
 jest.mock('react-router-dom');
+jest.mock('../../hooks/AuthContext', () => {
+  return {
+    useAuth: () => ({
+      signIn: mockSignIn,
+    }),
+  };
+});
 
 describe('Login Page', () => {
-  const signInMock = jest.fn();
-  jest.spyOn(AuthContext, 'useAuth').mockReturnValue({
-    signIn: signInMock,
-    auth: {} as any,
-    signOut: jest.fn(),
-    updateUserAvatar: jest.fn(),
-    updateUserProfile: jest.fn(),
-  });
-
   beforeEach(() => {
-    signInMock.mockClear();
+    mockSignIn.mockClear();
   });
 
   it('should be able to login', async () => {
@@ -31,7 +30,7 @@ describe('Login Page', () => {
     fireEvent.click(submitButton);
 
     await wait(() => {
-      expect(signInMock).toHaveBeenCalledWith('test@email.com', '123456');
+      expect(mockSignIn).toHaveBeenCalledWith('test@email.com', '123456');
     });
   });
 
@@ -46,12 +45,12 @@ describe('Login Page', () => {
     fireEvent.click(submitButton);
 
     await wait(() => {
-      expect(signInMock).not.toHaveBeenCalled();
+      expect(mockSignIn).not.toHaveBeenCalled();
     });
   });
 
   it('should should show toast when an error is returned after calling `signIn`', async () => {
-    signInMock.mockRejectedValue(new Error());
+    mockSignIn.mockRejectedValue(new Error());
     const addToastMock = jest.fn();
     jest.spyOn(ToastContext, 'useToast').mockReturnValue({
       addToast: addToastMock,
@@ -67,11 +66,11 @@ describe('Login Page', () => {
     fireEvent.click(submitButton);
 
     await wait(() => {
-      expect(addToastMock).toHaveBeenCalledWith({
-        type: 'error',
-        title: 'Erro ao fazer login',
-        description: 'Verifique se o email ou senha estão corretos',
-      });
+      expect(addToastMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'error',
+        }),
+      );
     });
   });
 });
