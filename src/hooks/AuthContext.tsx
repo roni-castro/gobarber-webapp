@@ -1,9 +1,16 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import api from '../data/api';
 import { TOKEN, USER_INFO } from '../data/auth/authStorageConstants';
 import AuthDTO from '../data/models/AuthDTO';
 import UserData from '../data/models/UserData';
 import { updateAvatar, updateUserInfo } from '../data/services/user/profile';
+import EventPublisher from '../utils/eventPublisher';
 import {
   getStorageItem,
   removeStorageItem,
@@ -47,6 +54,7 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
   const [auth, setAuth] = useState<Auth>(() => {
     const user = getStorageItem<UserData>(USER_INFO);
     const token = getStorageItem<string>(TOKEN);
+
     if (user && token) {
       return { user, token };
     }
@@ -89,6 +97,18 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
       ...auth,
       user,
     }));
+  }, []);
+
+  useEffect(() => {
+    EventPublisher.instance = new EventPublisher(['TOKEN_EXPIRED']);
+    const subscription = EventPublisher.instance.subscribe(
+      'TOKEN_EXPIRED',
+      () => {
+        signOut();
+      },
+    );
+
+    return () => subscription();
   }, []);
 
   return (
