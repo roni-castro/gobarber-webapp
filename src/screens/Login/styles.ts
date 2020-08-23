@@ -26,20 +26,13 @@ export const Content = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-export const AnimationContainer = styled.div`
-  display: inherit;
-  flex-direction: inherit;
-  align-items: inherit;
-  justify-content: inherit;
+  padding: 20px;
 
   animation: ${appearFromLeft} 1s;
 
   form {
     width: 340px;
     margin: 80px 0;
-    flex-direction: column;
     text-align: center;
 
     h1 {
@@ -59,7 +52,7 @@ export const AnimationContainer = styled.div`
     }
   }
 
-  a {
+  > a {
     display: flex;
     align-items: center;
     color: #ff9000;

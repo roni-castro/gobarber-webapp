@@ -10,7 +10,7 @@ import Input from '../../components/Input';
 import AuthContext from '../../hooks/AuthContext';
 import ToastContext from '../../hooks/ToastContext';
 import { mapValidationErrorToErrorObject } from '../../utils/errorObjectMapper';
-import { AnimationContainer, Background, Container, Content } from './styles';
+import { Background, Container, Content } from './styles';
 
 interface LoginInputData {
   email: string;
@@ -51,26 +51,24 @@ const Login: React.FC = () => {
   return (
     <Container>
       <Content>
-        <AnimationContainer>
-          <img src={Logo} alt="GoBarber logo" />
-          <Form ref={formRef} onSubmit={handleSubmit}>
-            <h1>Faça seu logon</h1>
-            <Input name="email" icon={FiMail} placeholder="E-mail" />
-            <Input
-              name="password"
-              icon={FiLock}
-              type="password"
-              placeholder="Senha"
-              autoComplete="on"
-            />
-            <Button type="submit">Entrar</Button>
-            <Link to="forgot-password">Esqueci minha senha</Link>
-          </Form>
-          <Link to="/signup">
-            <FiLogIn />
-            Criar conta
-          </Link>
-        </AnimationContainer>
+        <img src={Logo} alt="GoBarber logo" />
+        <Form ref={formRef} onSubmit={handleSubmit}>
+          <h1>Faça seu logon</h1>
+          <Input name="email" icon={FiMail} placeholder="E-mail" />
+          <Input
+            name="password"
+            icon={FiLock}
+            type="password"
+            placeholder="Senha"
+            autoComplete="on"
+          />
+          <Button type="submit">Entrar</Button>
+          <Link to="forgot-password">Esqueci minha senha</Link>
+        </Form>
+        <Link to="/signup">
+          <FiLogIn />
+          Criar conta
+        </Link>
       </Content>
       <Background />
     </Container>

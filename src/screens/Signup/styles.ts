@@ -26,21 +26,18 @@ export const Content = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-export const AnimationContent = styled.div`
-  display: inherit;
-  flex-direction: inherit;
-  align-items: inherit;
-  justify-content: inherit;
+  padding: 20px;
 
   animation: ${appearFromRight} 1s;
 
   form {
     width: 340px;
     margin: 80px 0;
-    flex-direction: column;
     text-align: center;
+
+    h1 {
+      margin-bottom: 24px;
+    }
 
     span {
       margin-bottom: 24px;
