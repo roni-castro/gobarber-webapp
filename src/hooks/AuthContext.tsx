@@ -107,7 +107,6 @@ const AuthProvider: React.FC = (props: any): JSX.Element => {
         signOut();
       },
     );
-
     return () => subscription();
   }, []);
 
