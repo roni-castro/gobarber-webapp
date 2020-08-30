@@ -51,16 +51,9 @@ const Dashboard: React.FC = () => {
   const { addToast } = ToastContext.useToast();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const appointments = await getProviderAppointments<AppointmentData[]>({
-        day: selectedDate.getDate(),
-        month: selectedDate.getMonth() + 1,
-        year: selectedDate.getFullYear(),
-      });
-      setAppointments(mapToAppointments(appointments));
-    };
-
-    const mapToAppointments = (apointments: AppointmentData[]) => {
+    const mapToAppointments = (
+      apointments: AppointmentData[],
+    ): Appointment[] => {
       return apointments.map(appointment => {
         return {
           ...appointment,
@@ -68,6 +61,16 @@ const Dashboard: React.FC = () => {
           hourFormatted: format(parseISO(appointment.date), 'HH:mm'),
         };
       });
+    };
+    const fetchData = async (): Promise<void> => {
+      const appointmentsResponse = await getProviderAppointments<
+        AppointmentData[]
+      >({
+        day: selectedDate.getDate(),
+        month: selectedDate.getMonth() + 1,
+        year: selectedDate.getFullYear(),
+      });
+      setAppointments(mapToAppointments(appointmentsResponse));
     };
 
     fetchData();
@@ -154,7 +157,7 @@ const Dashboard: React.FC = () => {
               </strong>
             </div>
           </Profile>
-          <button>
+          <button type="button">
             <FiPower onClick={signOut} />
           </button>
         </HeaderContent>
