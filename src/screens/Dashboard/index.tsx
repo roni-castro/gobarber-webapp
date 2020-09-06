@@ -8,11 +8,8 @@ import { Link } from 'react-router-dom';
 import Logo from '../../assets/logo.svg';
 import ScheduleSection from '../../components/ScheduleSection';
 import AppointmentData from '../../data/models/AppointmentData';
-import { AppointmentMonthAvailabilityResponse } from '../../data/models/AppointmentMonthAvailabilityData';
 import { getProviderAppointments } from '../../data/services/appointment/providerAppointments';
-import { getProviderMonthAvailability } from '../../data/services/appointment/providerAvailability';
 import AuthContext from '../../hooks/AuthContext';
-import ToastContext from '../../hooks/ToastContext';
 import {
   Calendar,
   Container,
@@ -39,16 +36,10 @@ interface Appointment {
 const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedMonth, setSelectedMonth] = useState(new Date());
-  const [monthsAvailability, setMonthAvailability] = useState<
-    AppointmentMonthAvailabilityResponse
-  >([]);
   const {
     signOut,
     auth: { user },
   } = AuthContext.useAuth();
-
-  const { addToast } = ToastContext.useToast();
 
   useEffect(() => {
     const mapToAppointments = (
@@ -100,38 +91,6 @@ const Dashboard: React.FC = () => {
     }
     setSelectedDate(day);
   }, []);
-
-  const handleMonthChange = useCallback((month: Date) => {
-    setSelectedMonth(month);
-  }, []);
-
-  useEffect(() => {
-    getProviderMonthAvailability<AppointmentMonthAvailabilityResponse>({
-      userId: user.id,
-      month: selectedMonth.getMonth() + 1,
-      year: selectedMonth.getFullYear(),
-    })
-      .then(data => {
-        setMonthAvailability(data);
-      })
-      .catch(() => {
-        addToast({
-          type: 'error',
-          title: 'Erro ao carregar disponibilidade do mês',
-          description: `Não foi possivel carregar a disponibilidade do mês ${selectedMonth.getMonth()}. Tente novamente!`,
-        });
-      });
-  }, [selectedMonth, addToast, user.id]);
-
-  const disabledDaysInMonth = useMemo(() => {
-    return monthsAvailability
-      .filter(monthAvailability => monthAvailability.availability === false)
-      .map(monthAvailability => {
-        const year = selectedMonth.getFullYear();
-        const month = selectedMonth.getMonth();
-        return new Date(year, month, monthAvailability.day);
-      });
-  }, [monthsAvailability, selectedMonth]);
 
   const isSelectedDateToday = useMemo(() => isToday(selectedDate), [
     selectedDate,
@@ -196,8 +155,7 @@ const Dashboard: React.FC = () => {
             selectedDays={[selectedDate]}
             fromMonth={new Date()}
             onDayClick={handleDayClick}
-            onMonthChange={handleMonthChange}
-            disabledDays={[...disabledDaysInMonth, { daysOfWeek: [0, 6] }]}
+            disabledDays={[{ daysOfWeek: [0, 6] }]}
             weekdaysShort={['D', 'S', 'T', 'Q', 'Q', 'S', 'S']}
             months={[
               'Janeiro',
