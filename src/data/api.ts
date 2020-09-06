@@ -9,10 +9,11 @@ const api = axios.create({
 
 api.interceptors.request.use(async function onFulfilled(config) {
   const token = await getStorageItem<string>(TOKEN);
-
   if (token != null) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  const TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  config.headers.timezone = TIMEZONE;
 
   return config;
 });
